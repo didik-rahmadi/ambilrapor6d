@@ -160,26 +160,37 @@ document.getElementById("attendanceForm").addEventListener("submit", e => {
   };
 
   fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(res => {
-    alert(res.message || "Data berhasil dikirim");
-    document.getElementById("attendanceForm").reset();
-    signaturePad.clear();
-    btn.disabled = false;
-    btn.innerText = "Kirim Kehadiran";
-  })
-  .catch(() => {
-    alert("Gagal mengirim data. Silakan coba lagi.");
-    btn.disabled = false;
-    btn.innerText = "Kirim Kehadiran";
-  });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(data)
+})
+.then(res => {
+  console.log("POST STATUS:", res.status);
+  return res.json();
+})
+.then(res => {
+  console.log("POST RESPONSE:", res);
+
+  if (!res.success) {
+    alert("Gagal: " + (res.error || "Unknown error"));
+    return;
+  }
+
+  alert(res.message);
+  document.getElementById("attendanceForm").reset();
+  signaturePad.clear();
+})
+.catch(err => {
+  console.error("POST ERROR:", err);
+  alert("Gagal mengirim data");
+});
+
 });
 </script>
 </body>
 </html>
+
 
 
