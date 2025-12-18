@@ -1,178 +1,375 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daftar Hadir Pengambilan Rapor 6D</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presensi Pembagian Rapor 6D</title>
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Signature Pad -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
-  <!-- Signature Pad -->
-  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --accent-color: #3f37c9;
+            --bg-overlay: rgba(255, 255, 255, 0.92);
+        }
 
-  <style>
-    body {
-      background: #f4f6f8;
-      padding: 20px;
-    }
-    .container {
-      max-width: 520px;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    #canvas {
-      width: 100%;
-      height: 200px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background: #fff;
-      touch-action: none;
-    }
-  </style>
+        body {
+            font-family: 'Plus+Jakarta+Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Background image with fallback gradient */
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8)), 
+                        url('https://drive.google.com/uc?export=view&id=1pabgwogQ0mWOFX44IrSr54V0UyIMgrSF');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 20px;
+        }
+
+        .main-card {
+            width: 100%;
+            max-width: 500px;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 32px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            box-shadow: 0 8px 16px rgba(67, 97, 238, 0.3);
+        }
+
+        .header-section h4 {
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .header-section p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            background-color: #fff;
+        }
+
+        .signature-wrapper {
+            background: #fff;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            margin-top: 5px;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 180px;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .btn-clear {
+            font-size: 0.75rem;
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0;
+            border: none;
+            background: none;
+            margin-top: 8px;
+            transition: color 0.2s;
+        }
+
+        .btn-clear:hover {
+            color: #b91c1c;
+        }
+
+        .btn-submit {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            transition: all 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Custom Notification Toast/Modal */
+        #customAlert {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            min-width: 300px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border-left: 6px solid var(--primary-color);
+            animation: fadeInDown 0.4s ease;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
-  <h4 class="text-center mb-4">
-    Daftar Hadir Pengambilan Rapor<br>Kelas 6D
-  </h4>
 
-  <form id="attendanceForm">
-    <div class="mb-3">
-      <label class="form-label">Nama Murid</label>
-      <select id="studentName" class="form-select" required>
-        <option value="">-- pilih nama murid --</option>
-      </select>
+<div id="customAlert">
+    <div class="d-flex align-items-center">
+        <div id="alertIcon" class="me-3"></div>
+        <div id="alertMessage" class="fw-bold text-dark"></div>
+    </div>
+</div>
+
+<div class="main-card">
+    <div class="header-section">
+        <div class="header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z"/>
+            </svg>
+        </div>
+        <h4>Daftar Hadir Pembagian Rapor</h4>
+        <p>Kelas 6D • Tahun Ajaran 2025/2026</p>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">Nama Orang Tua / Wali</label>
-      <input type="text" id="parentName" class="form-control" required>
-    </div>
+    <form id="attendanceForm">
+        <div class="mb-3">
+            <label class="form-label">Nama Murid</label>
+            <select id="studentName" class="form-select" required>
+                <option value="" disabled selected>Cari nama murid...</option>
+            </select>
+        </div>
 
-    <div class="mb-3">
-      <label class="form-label">Nomor HP</label>
-      <input type="tel" id="phone" class="form-control" required>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Nama Orang Tua / Wali</label>
+            <input type="text" id="parentName" class="form-control" placeholder="Tulis nama lengkap Anda" required>
+        </div>
 
-    <div class="mb-3">
-      <label class="form-label">Tanda Tangan</label>
-      <canvas id="canvas"></canvas>
-      <button type="button" class="btn btn-sm btn-link mt-1" onclick="clearCanvas()">
-        Hapus tanda tangan
-      </button>
-    </div>
+        <div class="mb-4">
+            <label class="form-label">Nomor WhatsApp Aktif</label>
+            <input type="tel" id="phone" class="form-control" placeholder="Contoh: 08123456789" required>
+        </div>
 
-    <button id="submitBtn" type="submit" class="btn btn-primary w-100">
-      Kirim Kehadiran
-    </button>
-  </form>
+        <div class="mb-3">
+            <label class="form-label d-flex justify-content-between">
+                Tanda Tangan Digital
+                <button type="button" class="btn-clear" onclick="clearCanvas()">Hapus</button>
+            </label>
+            <div class="signature-wrapper">
+                <canvas id="canvas"></canvas>
+            </div>
+        </div>
+
+        <button id="submitBtn" type="submit" class="btn btn-primary w-100 btn-submit">
+            Kirim Kehadiran
+        </button>
+    </form>
 </div>
 
 <script>
-/* =====================================================
-   KONFIGURASI API (WAJIB DIGANTI)
-===================================================== */
-const API_URL = "https://script.google.com/macros/s/AKfycbwmGBkdnbGTr1zgO8qwT1oucsSzpyZ2PAkZvhzLZpIOvU8YkJ-qbGw2-onCD43zpCsNdw/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwmGBkdnbGTr1zgO8qwT1oucsSzpyZ2PAkZvhzLZpIOvU8YkJ-qbGw2-onCD43zpCsNdw/exec";
 
-/* =====================================================
-   SIGNATURE PAD (PRESISI HP)
-===================================================== */
-const canvas = document.getElementById("canvas");
-const signaturePad = new SignaturePad(canvas, {
-  minWidth: 1,
-  maxWidth: 2,
-  penColor: "black"
-});
-
-function resizeCanvas() {
-  const ratio = Math.max(window.devicePixelRatio || 1, 1);
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * ratio;
-  canvas.height = rect.height * ratio;
-  canvas.getContext("2d").scale(ratio, ratio);
-  signaturePad.clear();
-}
-
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-
-function clearCanvas() {
-  signaturePad.clear();
-}
-
-/* =====================================================
-   LOAD NAMA MURID (GET)
-===================================================== */
-fetch(API_URL + "?action=students")
-  .then(res => res.json())
-  .then(data => {
-    if (!Array.isArray(data)) {
-      alert("Gagal memuat data murid");
-      return;
+    /* =====================================================
+       UI HELPERS
+    ===================================================== */
+    function showAlert(message, type = 'info') {
+        const alert = document.getElementById('customAlert');
+        const alertMsg = document.getElementById('alertMessage');
+        const alertIcon = document.getElementById('alertIcon');
+        
+        alert.style.display = 'block';
+        alertMsg.innerText = message;
+        alert.style.borderLeftColor = type === 'error' ? '#ef4444' : '#4361ee';
+        
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 4000);
     }
 
-    const select = document.getElementById("studentName");
-    data.forEach(name => {
-      const opt = document.createElement("option");
-      opt.value = name;
-      opt.textContent = name;
-      select.appendChild(opt);
+    /* =====================================================
+       SIGNATURE PAD
+    ===================================================== */
+    const canvas = document.getElementById("canvas");
+    const signaturePad = new SignaturePad(canvas, {
+        minWidth: 1.5,
+        maxWidth: 3.5,
+        penColor: "#1e293b"
     });
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Gagal memuat data murid");
-  });
 
-/* =====================================================
-   SUBMIT FORM (POST TANPA CORS)
-===================================================== */
-document.getElementById("attendanceForm").addEventListener("submit", e => {
-  e.preventDefault();
-
-  if (signaturePad.isEmpty()) {
-    alert("Silakan tanda tangan terlebih dahulu.");
-    return;
-  }
-
-  const btn = document.getElementById("submitBtn");
-  btn.disabled = true;
-  btn.innerText = "Mengirim...";
-
-  const formData = new FormData();
-  formData.append("studentName", document.getElementById("studentName").value);
-  formData.append("parentName", document.getElementById("parentName").value);
-  formData.append("phone", document.getElementById("phone").value);
-  formData.append("signature", signaturePad.toDataURL("image/png"));
-
-  fetch(API_URL, {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(res => {
-    if (!res.success) {
-      alert("Gagal: " + res.error);
-      return;
+    function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+        signaturePad.clear();
     }
 
-    alert(res.message);
-    document.getElementById("attendanceForm").reset();
-    signaturePad.clear();
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Gagal mengirim data");
-  })
-  .finally(() => {
-    btn.disabled = false;
-    btn.innerText = "Kirim Kehadiran";
-  });
-});
+    window.addEventListener("resize", resizeCanvas);
+    document.addEventListener("DOMContentLoaded", resizeCanvas);
+
+    function clearCanvas() {
+        signaturePad.clear();
+    }
+
+    /* =====================================================
+       LOAD DATA
+    ===================================================== */
+    fetch(API_URL + "?action=students")
+        .then(res => res.json())
+        .then(data => {
+            if (!Array.isArray(data)) {
+                showAlert("Data murid tidak valid", "error");
+                return;
+            }
+
+            const select = document.getElementById("studentName");
+            data.sort().forEach(name => {
+                const opt = document.createElement("option");
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert("Gagal memuat data murid", "error");
+        });
+
+    /* =====================================================
+       SUBMIT FORM
+    ===================================================== */
+    document.getElementById("attendanceForm").addEventListener("submit", e => {
+        e.preventDefault();
+
+        if (signaturePad.isEmpty()) {
+            showAlert("Silakan tanda tangan terlebih dahulu.", "error");
+            return;
+        }
+
+        const btn = document.getElementById("submitBtn");
+        btn.disabled = true;
+        btn.innerHTML = `<span class="loading-spinner"></span> Mengirim...`;
+
+        const formData = new FormData();
+        formData.append("studentName", document.getElementById("studentName").value);
+        formData.append("parentName", document.getElementById("parentName").value);
+        formData.append("phone", document.getElementById("phone").value);
+        formData.append("signature", signaturePad.toDataURL("image/png"));
+
+        fetch(API_URL, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (!res.success) {
+                showAlert("Gagal: " + (res.error || "Terjadi kesalahan"), "error");
+                return;
+            }
+
+            showAlert("Berhasil! Terima kasih telah mengisi daftar hadir.", "success");
+            document.getElementById("attendanceForm").reset();
+            signaturePad.clear();
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert("Koneksi bermasalah. Silakan coba lagi.", "error");
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerText = "Kirim Kehadiran";
+        });
+    });
 </script>
 
 </body>
