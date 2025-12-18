@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daftar Hadir Rapor 6D</title>
+  <title>Daftar Hadir Pengambilan Rapor 6D</title>
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,11 +17,11 @@
       padding: 20px;
     }
     .container {
-      max-width: 500px;
+      max-width: 520px;
       background: #ffffff;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     #canvas {
       width: 100%;
@@ -36,13 +36,15 @@
 
 <body>
 <div class="container">
-  <h4 class="text-center mb-4">Daftar Hadir Pengambilan Rapor<br>Kelas 6D</h4>
+  <h4 class="text-center mb-4">
+    Daftar Hadir Pengambilan Rapor<br>Kelas 6D
+  </h4>
 
   <form id="attendanceForm">
     <div class="mb-3">
       <label class="form-label">Nama Murid</label>
       <select id="studentName" class="form-select" required>
-        <option value="">-- pilih nama --</option>
+        <option value="">-- pilih nama murid --</option>
       </select>
     </div>
 
@@ -59,26 +61,26 @@
     <div class="mb-3">
       <label class="form-label">Tanda Tangan</label>
       <canvas id="canvas"></canvas>
-      <button type="button" class="btn btn-sm btn-link mt-1" onclick="clearCanvas()">Hapus Tanda Tangan</button>
+      <button type="button" class="btn btn-sm btn-link mt-1" onclick="clearCanvas()">
+        Hapus tanda tangan
+      </button>
     </div>
 
     <button id="submitBtn" type="submit" class="btn btn-primary w-100">
       Kirim Kehadiran
     </button>
   </form>
-
-  <div id="status" class="text-center mt-3"></div>
 </div>
 
 <script>
-/* ==============================
-   KONFIGURASI API (WAJIB DIISI)
-============================== */
+/* =====================================================
+   KONFIGURASI API (WAJIB DIGANTI)
+===================================================== */
 const API_URL = "https://script.google.com/macros/s/AKfycbwmGBkdnbGTr1zgO8qwT1oucsSzpyZ2PAkZvhzLZpIOvU8YkJ-qbGw2-onCD43zpCsNdw/exec";
 
-/* ==============================
-   SIGNATURE PAD (PRESISI)
-============================== */
+/* =====================================================
+   SIGNATURE PAD (PRESISI HP)
+===================================================== */
 const canvas = document.getElementById("canvas");
 const signaturePad = new SignaturePad(canvas, {
   minWidth: 1,
@@ -89,11 +91,9 @@ const signaturePad = new SignaturePad(canvas, {
 function resizeCanvas() {
   const ratio = Math.max(window.devicePixelRatio || 1, 1);
   const rect = canvas.getBoundingClientRect();
-
   canvas.width = rect.width * ratio;
   canvas.height = rect.height * ratio;
   canvas.getContext("2d").scale(ratio, ratio);
-
   signaturePad.clear();
 }
 
@@ -104,27 +104,18 @@ function clearCanvas() {
   signaturePad.clear();
 }
 
-/* ==============================
-   LOAD NAMA MURID
-============================== */
-console.log("API_URL:", API_URL);
-
+/* =====================================================
+   LOAD NAMA MURID (GET)
+===================================================== */
 fetch(API_URL + "?action=students")
-  .then(res => {
-    console.log("HTTP STATUS:", res.status);
-    return res.json();
-  })
+  .then(res => res.json())
   .then(data => {
-    console.log("DATA DARI API:", data);
-
-    const select = document.getElementById("studentName");
-    select.innerHTML = '<option value="">-- pilih nama --</option>';
-
     if (!Array.isArray(data)) {
-      alert("Data bukan array, cek backend");
+      alert("Gagal memuat data murid");
       return;
     }
 
+    const select = document.getElementById("studentName");
     data.forEach(name => {
       const opt = document.createElement("option");
       opt.value = name;
@@ -133,18 +124,18 @@ fetch(API_URL + "?action=students")
     });
   })
   .catch(err => {
-    console.error("FETCH ERROR:", err);
+    console.error(err);
     alert("Gagal memuat data murid");
   });
 
-/* ==============================
-   SUBMIT FORM
-============================== */
+/* =====================================================
+   SUBMIT FORM (POST TANPA CORS)
+===================================================== */
 document.getElementById("attendanceForm").addEventListener("submit", e => {
   e.preventDefault();
 
   if (signaturePad.isEmpty()) {
-    alert("Silakan isi tanda tangan terlebih dahulu.");
+    alert("Silakan tanda tangan terlebih dahulu.");
     return;
   }
 
@@ -152,45 +143,37 @@ document.getElementById("attendanceForm").addEventListener("submit", e => {
   btn.disabled = true;
   btn.innerText = "Mengirim...";
 
-  const data = {
-    studentName: document.getElementById("studentName").value,
-    parentName: document.getElementById("parentName").value,
-    phone: document.getElementById("phone").value,
-    signature: signaturePad.toDataURL("image/png")
-  };
+  const formData = new FormData();
+  formData.append("studentName", document.getElementById("studentName").value);
+  formData.append("parentName", document.getElementById("parentName").value);
+  formData.append("phone", document.getElementById("phone").value);
+  formData.append("signature", signaturePad.toDataURL("image/png"));
 
   fetch(API_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(data)
-})
-.then(res => {
-  console.log("POST STATUS:", res.status);
-  return res.json();
-})
-.then(res => {
-  console.log("POST RESPONSE:", res);
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (!res.success) {
+      alert("Gagal: " + res.error);
+      return;
+    }
 
-  if (!res.success) {
-    alert("Gagal: " + (res.error || "Unknown error"));
-    return;
-  }
-
-  alert(res.message);
-  document.getElementById("attendanceForm").reset();
-  signaturePad.clear();
-})
-.catch(err => {
-  console.error("POST ERROR:", err);
-  alert("Gagal mengirim data");
-});
-
+    alert(res.message);
+    document.getElementById("attendanceForm").reset();
+    signaturePad.clear();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Gagal mengirim data");
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.innerText = "Kirim Kehadiran";
+  });
 });
 </script>
+
 </body>
 </html>
-
-
-
