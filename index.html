@@ -107,10 +107,24 @@ function clearCanvas() {
 /* ==============================
    LOAD NAMA MURID
 ============================== */
+console.log("API_URL:", API_URL);
+
 fetch(API_URL + "?action=students")
-  .then(res => res.json())
+  .then(res => {
+    console.log("HTTP STATUS:", res.status);
+    return res.json();
+  })
   .then(data => {
+    console.log("DATA DARI API:", data);
+
     const select = document.getElementById("studentName");
+    select.innerHTML = '<option value="">-- pilih nama --</option>';
+
+    if (!Array.isArray(data)) {
+      alert("Data bukan array, cek backend");
+      return;
+    }
+
     data.forEach(name => {
       const opt = document.createElement("option");
       opt.value = name;
@@ -118,8 +132,9 @@ fetch(API_URL + "?action=students")
       select.appendChild(opt);
     });
   })
-  .catch(() => {
-    alert("Gagal memuat daftar murid. Silakan refresh halaman.");
+  .catch(err => {
+    console.error("FETCH ERROR:", err);
+    alert("Gagal memuat data murid");
   });
 
 /* ==============================
@@ -166,4 +181,5 @@ document.getElementById("attendanceForm").addEventListener("submit", e => {
 </script>
 </body>
 </html>
+
 
