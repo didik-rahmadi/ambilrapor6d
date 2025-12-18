@@ -16,7 +16,7 @@
         :root {
             --primary-color: #4361ee;
             --accent-color: #3f37c9;
-            --bg-overlay: rgba(255, 255, 255, 0.92);
+            --bg-overlay: rgba(255, 255, 255, 0.94);
         }
 
         body {
@@ -27,29 +27,42 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Background image with fallback gradient */
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.8), rgba(76, 201, 240, 0.8)), 
-                        url('https://drive.google.com/uc?export=view&id=1pabgwogQ0mWOFX44IrSr54V0UyIMgrSF');
+            padding: 20px;
+            overflow-x: hidden;
+            background-color: #4361ee; /* Fallback color */
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Format Link Google User Content yang lebih stabil */
+            background-image: linear-gradient(135deg, rgba(67, 97, 238, 0.6), rgba(76, 201, 240, 0.6)), 
+                              url('https://lh3.googleusercontent.com/d/1pabgwogQ0mWOFX44IrSr54V0UyIMgrSF');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
-            padding: 20px;
+            background-repeat: no-repeat;
+            z-index: -1;
         }
 
         .main-card {
             width: 100%;
             max-width: 500px;
             background: var(--bg-overlay);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            padding: 32px;
-            animation: slideUp 0.6s ease-out;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            padding: 35px;
+            animation: slideUp 0.7s cubic-bezier(0.17, 0.67, 0.83, 0.67);
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -59,142 +72,138 @@
         }
 
         .header-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--primary-color);
-            border-radius: 16px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
             color: white;
-            box-shadow: 0 8px 16px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
         }
 
         .header-section h4 {
-            font-weight: 700;
+            font-weight: 800;
             color: #1e293b;
             margin: 0;
-            line-height: 1.3;
+            letter-spacing: -0.5px;
         }
 
         .header-section p {
             color: #64748b;
-            font-size: 0.9rem;
-            margin-top: 5px;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            font-weight: 500;
         }
 
         .form-label {
-            font-weight: 600;
+            font-weight: 700;
             color: #334155;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-bottom: 8px;
-            display: block;
         }
 
         .form-control, .form-select {
-            border-radius: 12px;
-            padding: 12px 16px;
+            border-radius: 14px;
+            padding: 14px 18px;
             border: 2px solid #e2e8f0;
             background-color: #f8fafc;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease-in-out;
             font-size: 0.95rem;
         }
 
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
             background-color: #fff;
         }
 
         .signature-wrapper {
             background: #fff;
             border: 2px dashed #cbd5e1;
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
             position: relative;
             margin-top: 5px;
+            cursor: crosshair;
         }
 
         #canvas {
             width: 100%;
             height: 180px;
             touch-action: none;
-            cursor: crosshair;
         }
 
         .btn-clear {
             font-size: 0.75rem;
             color: #ef4444;
             text-decoration: none;
-            font-weight: 600;
-            padding: 0;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 8px;
             border: none;
-            background: none;
-            margin-top: 8px;
-            transition: color 0.2s;
+            background: rgba(239, 68, 68, 0.1);
+            transition: all 0.2s;
         }
 
         .btn-clear:hover {
+            background: rgba(239, 68, 68, 0.2);
             color: #b91c1c;
         }
 
         .btn-submit {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             border: none;
-            border-radius: 14px;
-            padding: 14px;
+            border-radius: 16px;
+            padding: 16px;
             font-weight: 700;
             font-size: 1rem;
             color: white;
             transition: all 0.3s;
-            margin-top: 20px;
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
+            margin-top: 25px;
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
         }
 
         .btn-submit:hover:not(:disabled) {
-            background: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(67, 97, 238, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
         }
 
-        .btn-submit:disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
-        }
-
-        /* Custom Notification Toast/Modal */
+        /* Custom Notification Toast */
         #customAlert {
             display: none;
             position: fixed;
-            top: 20px;
+            top: 25px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 9999;
-            min-width: 300px;
+            z-index: 10000;
+            min-width: 320px;
             background: white;
-            padding: 16px 24px;
-            border-radius: 16px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-            border-left: 6px solid var(--primary-color);
-            animation: fadeInDown 0.4s ease;
+            padding: 18px 25px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            border-bottom: 4px solid var(--primary-color);
+            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translate(-50%, -20px); }
-            to { opacity: 1; transform: translate(-50%, 0); }
+        @keyframes bounceIn {
+            0% { transform: translate(-50%, -100px); opacity: 0; }
+            100% { transform: translate(-50%, 0); opacity: 1; }
         }
 
         .loading-spinner {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: #fff;
-            animation: spin 0.8s linear infinite;
+            animation: spin 1s linear infinite;
             display: inline-block;
-            margin-right: 8px;
-            vertical-align: middle;
+            margin-right: 10px;
         }
 
         @keyframes spin {
@@ -214,19 +223,19 @@
 <div class="main-card">
     <div class="header-section">
         <div class="header-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 16 16">
                 <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z"/>
             </svg>
         </div>
-        <h4>Daftar Hadir Pembagian Rapor</h4>
-        <p>Kelas 6D • Tahun Ajaran 2025/2026</p>
+        <h4>Presensi Pembagian Rapor Kelas 6D</h4>
+        <p>SDN Pejaten Timur 11 • TA 2025/2026</p>
     </div>
 
     <form id="attendanceForm">
         <div class="mb-3">
             <label class="form-label">Nama Murid</label>
             <select id="studentName" class="form-select" required>
-                <option value="" disabled selected>Cari nama murid...</option>
+                <option value="" disabled selected>Pilih nama murid...</option>
             </select>
         </div>
 
@@ -236,13 +245,13 @@
         </div>
 
         <div class="mb-4">
-            <label class="form-label">Nomor WhatsApp Aktif</label>
-            <input type="tel" id="phone" class="form-control" placeholder="Contoh: 08123456789" required>
+            <label class="form-label">Nomor WhatsApp</label>
+            <input type="tel" id="phone" class="form-control" placeholder="Contoh: 0812xxxx" required>
         </div>
 
         <div class="mb-3">
-            <label class="form-label d-flex justify-content-between">
-                Tanda Tangan Digital
+            <label class="form-label d-flex justify-content-between align-items-center">
+                Tanda Tangan
                 <button type="button" class="btn-clear" onclick="clearCanvas()">Hapus</button>
             </label>
             <div class="signature-wrapper">
@@ -259,31 +268,23 @@
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwmGBkdnbGTr1zgO8qwT1oucsSzpyZ2PAkZvhzLZpIOvU8YkJ-qbGw2-onCD43zpCsNdw/exec";
 
-    /* =====================================================
-       UI HELPERS
-    ===================================================== */
     function showAlert(message, type = 'info') {
         const alert = document.getElementById('customAlert');
         const alertMsg = document.getElementById('alertMessage');
-        const alertIcon = document.getElementById('alertIcon');
-        
         alert.style.display = 'block';
         alertMsg.innerText = message;
-        alert.style.borderLeftColor = type === 'error' ? '#ef4444' : '#4361ee';
+        alert.style.borderBottomColor = type === 'error' ? '#ef4444' : '#22c55e';
         
         setTimeout(() => {
             alert.style.display = 'none';
         }, 4000);
     }
 
-    /* =====================================================
-       SIGNATURE PAD
-    ===================================================== */
     const canvas = document.getElementById("canvas");
     const signaturePad = new SignaturePad(canvas, {
         minWidth: 1.5,
-        maxWidth: 3.5,
-        penColor: "#1e293b"
+        maxWidth: 4,
+        penColor: "#0f172a"
     });
 
     function resizeCanvas() {
@@ -301,44 +302,35 @@
         signaturePad.clear();
     }
 
-    /* =====================================================
-       LOAD DATA
-    ===================================================== */
     fetch(API_URL + "?action=students")
         .then(res => res.json())
         .then(data => {
-            if (!Array.isArray(data)) {
-                showAlert("Data murid tidak valid", "error");
-                return;
+            if (Array.isArray(data)) {
+                const select = document.getElementById("studentName");
+                data.sort().forEach(name => {
+                    const opt = document.createElement("option");
+                    opt.value = name;
+                    opt.textContent = name;
+                    select.appendChild(opt);
+                });
             }
-
-            const select = document.getElementById("studentName");
-            data.sort().forEach(name => {
-                const opt = document.createElement("option");
-                opt.value = name;
-                opt.textContent = name;
-                select.appendChild(opt);
-            });
         })
         .catch(err => {
             console.error(err);
-            showAlert("Gagal memuat data murid", "error");
+            showAlert("Gagal memuat daftar murid", "error");
         });
 
-    /* =====================================================
-       SUBMIT FORM
-    ===================================================== */
     document.getElementById("attendanceForm").addEventListener("submit", e => {
         e.preventDefault();
 
         if (signaturePad.isEmpty()) {
-            showAlert("Silakan tanda tangan terlebih dahulu.", "error");
+            showAlert("Mohon isi tanda tangan Anda", "error");
             return;
         }
 
         const btn = document.getElementById("submitBtn");
         btn.disabled = true;
-        btn.innerHTML = `<span class="loading-spinner"></span> Mengirim...`;
+        btn.innerHTML = `<span class="loading-spinner"></span> Mengirim Data...`;
 
         const formData = new FormData();
         formData.append("studentName", document.getElementById("studentName").value);
@@ -352,18 +344,17 @@
         })
         .then(res => res.json())
         .then(res => {
-            if (!res.success) {
-                showAlert("Gagal: " + (res.error || "Terjadi kesalahan"), "error");
-                return;
+            if (res.success) {
+                showAlert("Berhasil terkirim! Terima kasih.", "success");
+                document.getElementById("attendanceForm").reset();
+                signaturePad.clear();
+            } else {
+                showAlert("Gagal: " + res.error, "error");
             }
-
-            showAlert("Berhasil! Terima kasih telah mengisi daftar hadir.", "success");
-            document.getElementById("attendanceForm").reset();
-            signaturePad.clear();
         })
         .catch(err => {
             console.error(err);
-            showAlert("Koneksi bermasalah. Silakan coba lagi.", "error");
+            showAlert("Koneksi gagal. Coba lagi.", "error");
         })
         .finally(() => {
             btn.disabled = false;
