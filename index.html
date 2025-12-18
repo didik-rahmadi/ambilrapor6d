@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daftar Hadir Rapor 6D</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Signature Pad -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+  <style>
+    body {
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    #canvas {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      touch-action: none;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <h4 class="text-center mb-4">Daftar Hadir Pengambilan Rapor<br>Kelas 6D</h4>
+
+  <form id="attendanceForm">
+    <div class="mb-3">
+      <label class="form-label">Nama Murid</label>
+      <select id="studentName" class="form-select" required>
+        <option value="">-- pilih nama --</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Nama Orang Tua / Wali</label>
+      <input type="text" id="parentName" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Nomor HP</label>
+      <input type="tel" id="phone" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Tanda Tangan</label>
+      <canvas id="canvas"></canvas>
+      <button type="button" class="btn btn-sm btn-link mt-1" onclick="clearCanvas()">Hapus Tanda Tangan</button>
+    </div>
+
+    <button id="submitBtn" type="submit" class="btn btn-primary w-100">
+      Kirim Kehadiran
+    </button>
+  </form>
+
+  <div id="status" class="text-center mt-3"></div>
+</div>
+
+<script>
+/* ==============================
+   KONFIGURASI API (WAJIB DIISI)
+============================== */
+const API_URL = "https://script.google.com/macros/s/AKfycbyZZj82huz4gvRSJ3HYC204TJOQEA0vmVWkzp1oq5IZzMMfGZ0pdJclrvFhkgNYCPXuzw/exec";
+
+/* ==============================
+   SIGNATURE PAD (PRESISI)
+============================== */
+const canvas = document.getElementById("canvas");
+const signaturePad = new SignaturePad(canvas, {
+  minWidth: 1,
+  maxWidth: 2,
+  penColor: "black"
+});
+
+function resizeCanvas() {
+  const ratio = Math.max(window.devicePixelRatio || 1, 1);
+  const rect = canvas.getBoundingClientRect();
+
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  canvas.getContext("2d").scale(ratio, ratio);
+
+  signaturePad.clear();
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function clearCanvas() {
+  signaturePad.clear();
+}
+
+/* ==============================
+   LOAD NAMA MURID
+============================== */
+fetch(API_URL + "?action=students")
+  .then(res => res.json())
+  .then(data => {
+    const select = document.getElementById("studentName");
+    data.forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
+  })
+  .catch(() => {
+    alert("Gagal memuat daftar murid. Silakan refresh halaman.");
+  });
+
+/* ==============================
+   SUBMIT FORM
+============================== */
+document.getElementById("attendanceForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  if (signaturePad.isEmpty()) {
+    alert("Silakan isi tanda tangan terlebih dahulu.");
+    return;
+  }
+
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.innerText = "Mengirim...";
+
+  const data = {
+    studentName: document.getElementById("studentName").value,
+    parentName: document.getElementById("parentName").value,
+    phone: document.getElementById("phone").value,
+    signature: signaturePad.toDataURL("image/png")
+  };
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(res => {
+    alert(res.message || "Data berhasil dikirim");
+    document.getElementById("attendanceForm").reset();
+    signaturePad.clear();
+    btn.disabled = false;
+    btn.innerText = "Kirim Kehadiran";
+  })
+  .catch(() => {
+    alert("Gagal mengirim data. Silakan coba lagi.");
+    btn.disabled = false;
+    btn.innerText = "Kirim Kehadiran";
+  });
+});
+</script>
+</body>
+</html>
